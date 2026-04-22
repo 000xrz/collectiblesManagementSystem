@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="collectiblesManagementSystem.Views.CollectionPage"
+             xmlns:models="clr-namespace:collectiblesManagementSystem.Models"
+             Title="{Binding Name}">
+    <Grid RowDefinitions="Auto, Auto, *" Padding="20">
+        <Frame Grid.Row="0" BackgroundColor="#9752FA" Padding="15" CornerRadius="8" Margin="0,0,0,10">
+            <VerticalStackLayout>
+                <Label x:Name="SummaryLabel" TextColor="White" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+            </VerticalStackLayout>    
+        </Frame>
+        
+        <HorizontalStackLayout Grid.Row="1" Spacing="10" Margin="0,0,0,15" HorizontalOptions="Center">
+            <Button Text="Dodaj przedmiot" Clicked="OnAddItemClicked" BackgroundColor="#527AFA" TextColor="White" CornerRadius="8" />
+            <Button Text="Własna kolumna" Clicked="OnAddColumnClicked" BackgroundColor="#527AFA" TextColor="White" CornerRadius="8" />
+            <Button Text="Import / Eksport" Clicked="OnSyncClicked" BackgroundColor="#527AFA" TextColor="White" CornerRadius="8" />
+        </HorizontalStackLayout>
+        
+        <CollectionView x:Name="ItemsList" Grid.Row="2" SelectionMode="Single" SelectionChanged="OnItemSelected">
+            <CollectionView.EmptyView>
+                <VerticalStackLayout Padding="20" Spacing="8" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Label Text="Ta kolekcja jest jeszcze pusta"
+                           FontAttributes="Bold"
+                           FontSize="18"
+                           TextColor="#2C3E50"
+                           HorizontalTextAlignment="Center" />
+                    <Label Text="Kliknij „Dodaj przedmiot”, aby rozpocząć."
+                           TextColor="#7F8C8D"
+                           HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:CollectionItem">
+                    <Frame Margin="0,5" Padding="15" CornerRadius="10" BackgroundColor="#ECF0F1" HasShadow="True">
+                        <Grid ColumnDefinitions="Auto, *, Auto" ColumnSpacing="15">
+                            <Grid Grid.Column="0" WidthRequest="82" HeightRequest="82" VerticalOptions="Center">
+                                <Frame Padding="0" CornerRadius="8" HasShadow="False" BorderColor="#D3D3D3" BackgroundColor="#F3F3F3">
+                                    <Image Source="{Binding ImagePath}" Aspect="AspectFit" />
+                                </Frame>
+                                <Label Text="Brak&#10;zdjęcia"
+                                       FontSize="11"
+                                       TextColor="#95A5A6"
+                                       HorizontalTextAlignment="Center"
+                                       VerticalTextAlignment="Center"
+                                       IsVisible="False">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding HasImage}" Value="False">
+                                            <Setter Property="IsVisible" Value="True" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                            </Grid>
+                            
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" TextColor="#2C3E50" />
+                                <Label Text="{Binding ExtendedDetails}" TextColor="#7F8C8D" LineBreakMode="WordWrap" />
+                            </VerticalStackLayout>
+                            
+                            <VerticalStackLayout Grid.Column="2" VerticalOptions="Center" HorizontalOptions="End">
+                                <Label Text="{Binding Quantity, StringFormat='x {0} szt.'}" FontAttributes="Bold" TextColor="#2C3E50" />
+                            </VerticalStackLayout>
+                        </Grid>
+                        
+                        <Frame.Triggers>
+                            <DataTrigger TargetType="Frame" Binding="{Binding Status}" Value="{x:Static models:ItemStatus.Sold}">
+                                <Setter Property="Opacity" Value="0.4" />
+                            </DataTrigger>
+                        </Frame.Triggers>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>
